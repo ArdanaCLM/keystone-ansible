@@ -21,6 +21,7 @@ keystone_old_admin_pwd: "{{ KEY_API.old_vars.keystone_admin_pwd }}"
 
 keystone_user: keystone
 keystone_group: keystone
+keystone_home_dir: /var/www/keystone
 
 service: keystone
 

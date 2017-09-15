@@ -45,15 +45,25 @@
   tags:
     - keystone
 
+- name: KEY-API | install | Check to see if keystone user already exist
+  become: yes
+  getent:
+    database: passwd
+    key: "{{ keystone_user }}"
+    fail_key: no
+  tags:
+    - keystone
+
 - name: KEY-API | install | Add user '{{ keystone_user }}'
   become: yes
   user:
     name: "{{ keystone_user }}"
     group: "{{ keystone_group }}"
     createhome: no
-    home: /tmp
+    home: "{{ keystone_home_dir }}"
     shell: /bin/true
     state: present
+  when: getent_passwd["{{ keystone_user }}"] is none
   tags:
     - keystone
 
