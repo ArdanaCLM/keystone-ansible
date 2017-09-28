@@ -14,29 +14,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 #
-
-
-- name: KEY-API | _update_log_file_permissions | Update the file permissions for shibd log files
-  become: yes
-  file:
-    path: "{{ shibd_log_dir }}"
-    owner: "{{ shibd_user }}"
-    group: "{{ adm_group_name }}"
-    mode: "u+rw,g+r,o-rwx"
-    state: directory
-    recurse: yes
-  tags:
-    - keystone
-
-
-- name: KEY-API | _update_log_file_permissions | Update the file permissions for keystone log files
-  become: yes
-  file:
-    path: "{{ keystone_log_dir }}"
-    owner: "keystone"
-    group: "{{ adm_group_name }}"
-    mode: "u+rw,g+r,o-rwx"
-    state: directory
-    recurse: yes
-  tags:
-    - keystone
+---
+- name: KEY-API | main | Set os-specific variables
+  include_vars: "{{ ansible_os_family | lower }}.yml"

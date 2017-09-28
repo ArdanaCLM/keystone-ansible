@@ -20,20 +20,10 @@
 # python-httplib2 is an ansible dependency for the module uri
 - name:  KEY-API | install | Install keystone dependencies
   become: yes
-  apt:
+  package:
     state: latest
     name: "{{ item }}"
-  with_items:
-    - libldap-2.4-2
-    - libsasl2-2
-    - libmysqlclient18
-    - libxml2
-    - libxslt1.1
-    - libffi6
-    - libldap2-dev
-    - libsasl2-dev
-    - python-httplib2
-    - xmlsec1
+  with_items: key_api_packages
   tags:
     - keystone
 
