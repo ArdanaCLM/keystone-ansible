@@ -92,6 +92,7 @@ EXAMPLES = '''
 
 '''
 
+import traceback
 
 from keystoneclient.v3 import client as v3client
 from keystoneclient.auth.identity import v3
@@ -852,7 +853,9 @@ def process_module_action(module):
     try:
         result = dispatch_map[action](ks_client, **kwargs)
     except Exception as e:
-        module.fail_json(msg="%s, failed" % e)
+        tb = traceback.format_exc()
+        failed_msg = "%s: %s" % (e, tb)
+        module.fail_json(msg="%s, failed" % failed_msg)
     else:
         status, resource_data = result
         if hasattr(resource_data, '_info'):

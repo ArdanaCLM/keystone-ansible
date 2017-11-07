@@ -18,8 +18,6 @@
 
 - include: _apply_configuration_changes.yml
 
-- include: remove_admin_token.yml
-
 - include: _create_rc_files.yml
 
 - include: _setup_revocation_cron.yml

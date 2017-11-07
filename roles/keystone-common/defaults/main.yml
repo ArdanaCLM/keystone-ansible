@@ -63,8 +63,6 @@ keystone_admin_endpoint: "{{ KEY_API.advertises.vips.admin[0].url }}"
 keystone_internal_endpoint: "{{ KEY_API.advertises.vips.private[0].url }}"
 keystone_public_endpoint: "{{ KEY_API.advertises.vips.public[0].url  }}"
 
-keystone_admin_token: "{{ KEY_API.vars.keystone_admin_token | quote }}"
-
 keystone_service_project_name: "{{ KEY_API.vars.keystone_service_tenant }}"
 keystone_admin_project_name: "{{ KEY_API.vars.keystone_admin_tenant }}"
 keystone_demo_project_name:  "{{ KEY_API.vars.keystone_demo_tenant }}"
@@ -103,6 +101,7 @@ keystone_rabbit_password: "{{ KEY.consumes_FND_RMQ.vars.accounts.keystone.passwo
 keystone_rabbit_use_ssl: "{{ KEY.consumes_FND_RMQ.members.private[0].use_tls }}"
 
 keystone_cloudadmin_domain: cloud_admin
+keystone_cloudadmin_project: cloud_admin_project
 is_baremetal_install: "{{ True if ansible_virtualization_role == 'host' else False  }}"
 
 # This is used only for tuning virtual install

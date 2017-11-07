@@ -24,9 +24,7 @@
 # Please don't change any values under curly braces
 
 [DEFAULT]
-admin_token = "{{ keystone_admin_token }}"
 log_config_append = {{ keystone_conf_dir }}/logging.conf
-secure_proxy_ssl_header = HTTP_X_FORWARDED_PROTO
 notification_format = cadf
 
 [oslo_messaging_notifications]
@@ -47,6 +45,10 @@ min_pool_size = 1
 driver = sql
 domain_config_dir = {{ keystone_conf_dir }}/domains
 domain_specific_drivers_enabled = True
+
+[resource]
+admin_project_domain_name = {{ keystone_default_domain }}
+admin_project_name = {{ keystone_cloudadmin_project }}
 
 [token]
 expiration = 14400

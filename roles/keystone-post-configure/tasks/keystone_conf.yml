@@ -17,19 +17,6 @@
 # keystone user and endpoint registration
 ---
 
-- name: keystone-post-configure | keystone_conf | Get a domain scoped token
-  become: yes
-  keystone_v3:
-    endpoint: "{{ keystone_admin_endpoint }}/v3"
-    login_username: "{{ keystone_admin_user }}"
-    login_password: "{{ keystone_admin_user_pwd }}"
-    login_user_domain_name: "{{ keystone_default_domain }}"
-    login_domain_name: "{{ keystone_default_domain }}"
-    action: "token_get"
-  run_once: true
-  register: domain_scoped_token_result
-  ignore_errors: True
-
 - name: keystone-post-configure | keystone_conf | Create bootstrap users
   command: >
       "{{ keystone_bin_dir }}/keystone-manage"
@@ -37,6 +24,8 @@
       --log-config "{{ keystone_venv_install_conf_dir }}/logging.conf"
         bootstrap
       --bootstrap-username "{{ keystone_admin_user }}"
+      --bootstrap-project-name "{{ keystone_cloudadmin_project }}"
+      --bootstrap-role-name "{{ keystone_admin_role }}"
   environment:
       OS_BOOTSTRAP_PASSWORD: "{{ keystone_admin_user_pwd }}"
   run_once: true
@@ -45,57 +34,54 @@
   tags:
     - keystone
 
+- name: keystone-post-configure | keystone_conf | Get cloud admin token
+  become: yes
+  keystone_v3:
+    endpoint: "{{ keystone_admin_endpoint }}/v3"
+    login_username: "{{ keystone_admin_user }}"
+    login_password: "{{ keystone_admin_user_pwd }}"
+    login_user_domain_name: "{{ keystone_default_domain }}"
+    login_project_name: "{{ keystone_cloudadmin_project }}"
+    login_project_domain_name: "{{ keystone_default_domain }}"
+    action: "token_get"
+  run_once: true
+  register: cloud_admin_token_result
+  tags:
+    - keystone
+
+- name: keystone-post-configure | keystone_conf | Set cloud admin token
+  set_fact:
+    cloud_admin_token: "{{ cloud_admin_token_result.result }}"
+
 - name: keystone-post-configure | keystone_conf | Create roles
   keystone_v3:
-    login_token: "{{ keystone_admin_token }}"
+    login_token: "{{ cloud_admin_token }}"
     endpoint: "{{ keystone_internal_endpoint }}/v3"
     action: "create_role"
     role_name: "{{ item }}"
     description: "Bootstrap  roles  created via keystone deploy"
   with_items:
-    - "{{ keystone_admin_role }}"
     - "{{ keystone_keystoneadmin_role }}"
-  when: domain_scoped_token_result | failed
   run_once: true
   tags:
     - keystone
 
-- name: keystone-post-configure | keystone_conf | Create Admin User
-  become: yes
-  keystone_v3:
-    login_token: "{{ keystone_admin_token }}"
-    endpoint: "{{ keystone_internal_endpoint }}/v3"
-    action: "create_user"
-    user_name: "{{ keystone_admin_user }}"
-    user_password: "{{ keystone_admin_user_pwd }}"
-    description: "Admin use bootstrapped from ansible"
-    user_domain_name: "{{ keystone_v2_user_domain_name }}"
-  when: domain_scoped_token_result | failed
-  run_once: true
-  no_log: True
-  tags:
-    - keystone
-
+# NOTE: we should be using the keystone_cloud_admin project for cloud admin
+# operations. Using domain-scoped token for backward compatibility only.
 - name: keystone-post-configure | keystone_conf | Grant admin Role to admin User
     on Default domain
   become: yes
   keystone_v3:
-    login_token: "{{ keystone_admin_token }}"
+    login_token: "{{ cloud_admin_token }}"
     endpoint: "{{ keystone_internal_endpoint }}/v3"
     action: "grant_domain_role"
     user_name: "{{ keystone_admin_user }}"
     domain_name: "Default"
     role_name: "{{ keystone_admin_role }}"
     user_domain_name: "{{ keystone_v2_user_domain_name }}"
-  when: domain_scoped_token_result | failed
   run_once: true
   tags:
     - keystone
-
-# Admin token should be removed as soon as it is not used.
-# This prevents admin token from not being removed in keystone.conf, if errors
-# encountered in the later tasks.
-- include: "{{ playbook_dir }}/roles/KEY-API/tasks/remove_admin_token.yml"
 
 # now provision the rest of accounts using the newly-minted cloud admin
 # credential

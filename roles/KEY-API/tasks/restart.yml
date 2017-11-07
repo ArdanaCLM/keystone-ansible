@@ -22,7 +22,18 @@
 - name: KEY-API | restart | Touch the startup so that keystone is restarted
   become: yes
   file:
-    path: "{{ keystone_venv_install_share_dir }}/keystone/httpd/keystone.py"
+    path: "{{ keystone_bin_dir }}/keystone-wsgi-public"
+    owner: root
+    group: root
+    state: touch
+    mode: 0664
+  tags:
+    - keystone
+
+- name: KEY-API | restart | Touch the startup so that keystone is restarted
+  become: yes
+  file:
+    path: "{{ keystone_bin_dir }}/keystone-wsgi-admin"
     owner: root
     group: root
     state: touch
