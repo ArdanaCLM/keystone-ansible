@@ -39,7 +39,7 @@ keystone_fernet_dir: "{{ keystone_conf_dir }}/{{ keystone_fernet_dir_name }}/"
 keystone_db_ca_file: "/etc/ssl/certs/ca-certificates.crt"
 keystone_db_ssl: "{% if keystone_enable_tls_for_mysql and KEY_API.consumes_FND_MDB.vips.private[0].use_tls %}?ssl_ca={{ keystone_db_ca_file }}{% endif %}"
 
-keystone_database_connection_string: "mysql://{{ KEY_API.consumes_FND_MDB.vars.accounts.keystone.username }}:{{ KEY_API.consumes_FND_MDB.vars.accounts.keystone.password | urlencode }}@{{ KEY_API.consumes_FND_MDB.vips.private[0].host }}/keystone{{ keystone_db_ssl }}"
+keystone_database_connection_string: "mysql+pymysql://{{ KEY_API.consumes_FND_MDB.vars.accounts.keystone.username }}:{{ KEY_API.consumes_FND_MDB.vars.accounts.keystone.password | urlencode }}@{{ KEY_API.consumes_FND_MDB.vips.private[0].host }}/keystone{{ keystone_db_ssl }}"
 
 keystone_public_port: "{{ host.bind.KEY_API.public.port }}"
 keystone_public_listen_ip: "{{ host.bind.KEY_API.public.ip_address }}"
