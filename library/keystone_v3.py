@@ -877,7 +877,7 @@ def main():
         login_domain_name=dict(default=None),
         login_token=dict(default=None, no_log=True),
         insecure=dict(default=None),
-        cacert=dict(default=None),
+        cacert=dict(default="/etc/ssl/certs/ca-certificates.crt"),
 
         endpoint=dict(default=None),
         description=dict(default="Created by Ansible keystone_v3"),
