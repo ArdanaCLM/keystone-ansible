@@ -43,6 +43,7 @@
     login_user_domain_name: "{{ keystone_default_domain }}"
     login_project_name: "{{ keystone_cloudadmin_project }}"
     login_project_domain_name: "{{ keystone_default_domain }}"
+    cacert: "/etc/ssl/certs/ca-certificates.crt"
     action: "token_get"
   run_once: true
   register: cloud_admin_token_result
@@ -57,6 +58,7 @@
   keystone_v3:
     login_token: "{{ cloud_admin_token }}"
     endpoint: "{{ keystone_internal_endpoint }}/v3"
+    cacert: "/etc/ssl/certs/ca-certificates.crt"
     action: "create_role"
     role_name: "{{ item }}"
     description: "Bootstrap  roles  created via keystone deploy"
@@ -74,6 +76,7 @@
   keystone_v3:
     login_token: "{{ cloud_admin_token }}"
     endpoint: "{{ keystone_internal_endpoint }}/v3"
+    cacert: "/etc/ssl/certs/ca-certificates.crt"
     action: "grant_domain_role"
     user_name: "{{ keystone_admin_user }}"
     domain_name: "Default"
