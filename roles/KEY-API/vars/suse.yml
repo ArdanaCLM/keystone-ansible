@@ -16,6 +16,7 @@
 #
 ---
 key_api_packages:
+  - cron
   - libldap-2_4-2
   - libsasl2-3
   - libmysqlclient18
