@@ -42,6 +42,7 @@
   command: a2ensite keystone-modwsgi
   tags:
     - keystone
+  when: ansible_os_family == 'Debian'
 
 - include: "{{ playbook_dir }}/roles/FND-AP2/tasks/start_reload.yml"
   vars:

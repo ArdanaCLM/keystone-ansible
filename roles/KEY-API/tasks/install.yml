@@ -117,7 +117,7 @@
   become: yes
   template:
     src: keystone-modwsgi.conf.j2
-    dest: /etc/apache2/sites-available/keystone-modwsgi.conf
+    dest: "{{ apache2_vhost_dir }}/keystone-modwsgi.conf"
     mode: 0644
   register: ardana_notify_keystone_change
   tags: keystone
@@ -127,5 +127,6 @@
   command: a2ensite keystone-modwsgi
   tags:
     - keystone
+  when: ansible_os_family == 'Debian'
 
 - include: _venv_install.yml
