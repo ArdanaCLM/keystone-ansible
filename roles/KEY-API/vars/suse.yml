@@ -23,7 +23,6 @@ key_api_packages:
   - libxml2
   - libxslt1
   - libffi4
-  - openldap2-devel
   - cyrus-sasl
   - python-httplib2
   - xmlstarlet
