@@ -151,7 +151,6 @@
     "identity:update_policy": "rule:cloud_admin",
     "identity:delete_policy": "rule:cloud_admin",
 
-    "identity:change_password": "rule:owner",
     "identity:check_token": "rule:cloud_admin or rule:admin_or_owner or rule:service_or_admin",
     "identity:validate_token": "rule:service_or_admin",
     "identity:validate_token_head": "rule:service_or_admin",
