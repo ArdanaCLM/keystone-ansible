@@ -39,7 +39,6 @@
     owner: "{{ keystone_user }}"
     group: "{{ keystone_group }}"
     mode: 0600
-    validate: "{{ keystone_bin_dir }}/keystone-manage --config-file %s validate_config"
   become: yes
   register: ardana_notify_keystone_change
   tags:
