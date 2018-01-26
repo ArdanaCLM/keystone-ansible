@@ -18,6 +18,7 @@ ardanauser : "{{ ansible_env['USER'] }}"
 ardanauser_home: "{{ ansible_env['HOME'] }}"
 
 shibd_log_dir: "/var/log/shibboleth"
+shibd_www_log_dir: "/var/log/shibboleth-www"
 adm_group_name: "adm"
 
 keystone_log_dir: "/var/log/keystone"

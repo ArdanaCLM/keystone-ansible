@@ -19,12 +19,15 @@
 - name: KEY-API | _update_log_file_permissions | Update the file permissions for shibd log files
   become: yes
   file:
-    path: "{{ shibd_log_dir }}"
+    path: "{{ item }}"
     owner: "{{ shibd_user }}"
     group: "{{ adm_group_name }}"
     mode: "u+rw,g+r,o-rwx"
     state: directory
     recurse: yes
+  with_items:
+    - "{{ shibd_log_dir }}"
+    - "{{ shibd_www_log_dir }}"
   tags:
     - keystone
 
