@@ -15,11 +15,19 @@
 # under the License.
 #
 ---
-- name:  KEY-API | stop | Disable keystone site
+- name:  KEY-API | stop | Disable keystone site (hlinux)
   become: yes
   command: a2dissite keystone-modwsgi
   tags:
     - keystone
+  when: ansible_os_family == 'Debian'
+
+- name:  KEY-API | stop | Disable keystone site (SUSE)
+  become: yes
+  file:
+    state: absent
+    path: "{{ apache2_vhost_dir }}/keystone-modwsgi.conf"
+  when: ansible_os_family == 'Suse'
 
 - name: KEY-API | stop | Reload  Apache2 so that keystone is stopped
   become: yes
