@@ -113,20 +113,4 @@
     keystone_wsgi_socket_timeout: 120
   when: override_virtual_install
 
-- name: KEY-API | install  | Copies modwsgi configuration
-  become: yes
-  template:
-    src: keystone-modwsgi.conf.j2
-    dest: "{{ apache2_vhost_dir }}/keystone-modwsgi.conf"
-    mode: 0644
-  register: ardana_notify_keystone_change
-  tags: keystone
-
-- name:  KEY-API | install | Enable keystone site
-  become: yes
-  command: a2ensite keystone-modwsgi
-  tags:
-    - keystone
-  when: ansible_os_family == 'Debian'
-
 - include: _venv_install.yml
