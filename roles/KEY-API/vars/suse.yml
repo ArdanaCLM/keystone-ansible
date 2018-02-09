@@ -17,13 +17,15 @@
 ---
 key_api_packages:
   - cron
+  - cyrus-sasl
+  - libffi4
   - libldap-2_4-2
-  - libsasl2-3
   - libmysqlclient18
+  - libsasl2-3
   - libxml2
   - libxslt1
-  - libffi4
-  - cyrus-sasl
+  - logrotate
+  - python-PrettyTable
   - python-httplib2
   - xmlstarlet
 
