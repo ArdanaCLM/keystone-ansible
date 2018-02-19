@@ -20,7 +20,7 @@
 - name: KEY-API | _configure_deployment_options  | Copies modwsgi configuration
   template:
     src: keystone-modwsgi.conf.j2
-    dest: "{{ apache2_vhost_dir }}/keystone-modwsgi.conf"
+    dest: "{{ apache2_vhost_dir }}/keystone-modwsgi.vhost"
     mode: 0644
   become: yes
   register: ardana_notify_keystone_change

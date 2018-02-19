@@ -26,39 +26,21 @@
   when: ardana_notify_keystone_change is defined and
           ardana_notify_keystone_change.changed
 
-- name: KEY-API | start | Check if keystone site enabled (hlinux)
-  stat:
-    path: /etc/apache2/sites-enabled/keystone-modwsgi.conf
-  register: keystone_site_file_result
-  when: ansible_os_family == 'Debian'
+- name: KEY-API | start | Enable keystone-modwsgi vhost
+  become: yes
+  file:
+    src: "{{ apache2_vhost_dir }}/keystone-modwsgi.vhost"
+    dest: "{{ apache2_vhost_dir }}/keystone-modwsgi.conf"
+    state: link
+  tags: keystone
+  register: ardana_notify_keystone_apache_restart
 
-- name: KEY-API | start | Check if keystone site enabled (SUSE)
-  stat:
-    path: "{{ apache2_vhost_dir }}/keystone-modwsgi.conf"
-  register: keystone_site_file_result
-  when: ansible_os_family == 'Suse'
-
-# This is for the case stop after start
-- name: KEY-API | start | Set fact to start if it is disabled
+- name: KEY-API | start | Set fact to restart Apache
   set_fact:
     keystone_restart_required: True
-  when: not keystone_site_file_result.stat.exists
-
-- name:  KEY-API | start | Enable keystone site (hlinux)
-  become: yes
-  command: a2ensite keystone-modwsgi
-  tags:
-    - keystone
-  when: ansible_os_family == 'Debian'
-
-- name: KEY-API | install  | Enable keystone site (SUSE)
-  become: yes
-  template:
-    src: keystone-modwsgi.conf.j2
-    dest: "{{ apache2_vhost_dir }}/keystone-modwsgi.conf"
-    mode: 0644
-  tags: keystone
-  when: ansible_os_family == 'Suse'
+  when: >-
+    ardana_notify_keystone_apache_restart is defined
+    and ardana_notify_keystone_apache_restart.changed
 
 - include: "{{ playbook_dir }}/roles/FND-AP2/tasks/start_reload.yml"
   vars:
