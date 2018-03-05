@@ -18,12 +18,26 @@
 
 # Some of these libraries are already in base node install. No harm listing here
 # python-httplib2 is an ansible dependency for the module uri
-- name:  KEY-API | install | Install keystone dependencies
+- name: KEY-API | install | Install keystone dependencies
   become: yes
   package:
     state: latest
     name: "{{ item }}"
   with_items: key_api_packages
+  tags:
+    - keystone
+
+# TODO(fergal) - remove this extra package install action once the legacy
+# CI process includes the xmlsec1 package.
+- name: KEY-API | install | Install non-legacy keystone dependencies
+  become: yes
+  package:
+    state: latest
+    name: "{{ item }}"
+  with_items:
+    - xmlsec1
+  when:
+    - not (deployer_media_legacy_layout | bool)
   tags:
     - keystone
 

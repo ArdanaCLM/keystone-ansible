@@ -28,5 +28,6 @@ key_api_packages:
   - python-PrettyTable
   - python-httplib2
   - xmlstarlet
+# - xmlsec1  # TODO(fergal): uncomment once Legacy CI support includes package
 
 shibd_user: shibd
