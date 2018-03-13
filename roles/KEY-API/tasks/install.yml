@@ -49,40 +49,25 @@
   tags:
     - keystone
 
-# NOTE: keystone user along with its home dir are expected to be
-# created by the Keystone venv RPM package
-- name: KEY-API | install | Make sure keystone user already exist
-  become: yes
-  getent:
-    database: passwd
-    key: "{{ keystone_user }}"
-  when: not deployer_media_legacy_layout|bool
-  tags:
-    - keystone
-
-# TODO(gyee): remove this code once we get rid of legacy layout
-- name: KEY-API | install | Make sure keystone user already exist (legacy)
+- name: KEY-API | install | Check to see if keystone user already exist
   become: yes
   getent:
     database: passwd
     key: "{{ keystone_user }}"
     fail_key: no
-  when: deployer_media_legacy_layout|bool
   tags:
     - keystone
 
-- name: KEY-API | install | Add user '{{ keystone_user }}' (legacy)
+- name: KEY-API | install | Add user '{{ keystone_user }}'
   become: yes
   user:
     name: "{{ keystone_user }}"
     group: "{{ keystone_group }}"
-    createhome: yes
+    createhome: no
     home: "{{ keystone_home_dir }}"
     shell: /bin/true
     state: present
-  when: >
-    deployer_media_legacy_layout|bool and 
-    getent_passwd["{{ keystone_user }}"] is none
+  when: getent_passwd["{{ keystone_user }}"] is none
   tags:
     - keystone
 
