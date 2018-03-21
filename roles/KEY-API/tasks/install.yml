@@ -21,7 +21,7 @@
 - name: KEY-API | install | Install keystone dependencies
   become: yes
   package:
-    state: latest
+    state: present
     name: "{{ item }}"
   with_items: key_api_packages
   tags:
@@ -32,7 +32,7 @@
 - name: KEY-API | install | Install non-legacy keystone dependencies
   become: yes
   package:
-    state: latest
+    state: present
     name: "{{ item }}"
   with_items:
     - xmlsec1
