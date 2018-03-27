@@ -1,7 +1,7 @@
 {#
 #
 # (c) Copyright 2015-2016 Hewlett Packard Enterprise Development LP
-# (c) Copyright 2017 SUSE LLC
+# (c) Copyright 2017-2018 SUSE LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -32,5 +32,5 @@ export OS_PASSWORD={{ keystone_admin_user_pwd }}
 export OS_DOMAIN_NAME=Default
 export OS_AUTH_URL={{ keystone_internal_endpoint }}/v3
 export OS_INTERFACE=internal
-export OS_CACERT=/etc/ssl/certs/ca-certificates.crt
+export OS_CACERT={{ trusted_ca_bundle }}
 

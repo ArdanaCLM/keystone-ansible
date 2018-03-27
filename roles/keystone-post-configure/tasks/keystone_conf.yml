@@ -1,6 +1,6 @@
 #
 # (c) Copyright 2015-2017 Hewlett Packard Enterprise Development LP
-# (c) Copyright 2017 SUSE LLC
+# (c) Copyright 2017-2018 SUSE LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -43,7 +43,7 @@
     login_user_domain_name: "{{ keystone_default_domain }}"
     login_project_name: "{{ keystone_cloudadmin_project }}"
     login_project_domain_name: "{{ keystone_default_domain }}"
-    cacert: "/etc/ssl/certs/ca-certificates.crt"
+    cacert: "{{ trusted_ca_bundle }}"
     action: "token_get"
   run_once: true
   register: cloud_admin_token_result
@@ -58,7 +58,7 @@
   keystone_v3:
     login_token: "{{ cloud_admin_token }}"
     endpoint: "{{ keystone_internal_endpoint }}/v3"
-    cacert: "/etc/ssl/certs/ca-certificates.crt"
+    cacert: "{{ trusted_ca_bundle }}"
     action: "create_role"
     role_name: "{{ item }}"
     description: "Bootstrap  roles  created via keystone deploy"
@@ -76,7 +76,7 @@
   keystone_v3:
     login_token: "{{ cloud_admin_token }}"
     endpoint: "{{ keystone_internal_endpoint }}/v3"
-    cacert: "/etc/ssl/certs/ca-certificates.crt"
+    cacert: "{{ trusted_ca_bundle }}"
     action: "grant_domain_role"
     user_name: "{{ keystone_admin_user }}"
     domain_name: "Default"
