@@ -93,7 +93,7 @@
 - name: KEY-API | start | Debug keystone cert if appropriate
   run_once: true
   command: >
-    timeout 10 openssl s_client -CAfile /etc/ssl/certs/ca-certificates.crt
+    timeout 10 openssl s_client -CAfile {{ trusted_ca_bundle }}
       -connect {{ keystone_internal_vip_host }}:{{ keystone_internal_vip_port }}
   register: keystone_cert_result
   ignore_errors: true

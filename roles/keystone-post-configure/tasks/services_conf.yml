@@ -1,6 +1,6 @@
 #
 # (c) Copyright 2016 Hewlett Packard Enterprise Development LP
-# (c) Copyright 2017 SUSE LLC
+# (c) Copyright 2017-2018 SUSE LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -24,7 +24,7 @@
     login_password: "{{ keystone_admin_user_pwd }}"
     login_user_domain_name: "{{ keystone_default_domain }}"
     login_domain_name: "{{ keystone_default_domain }}"
-    cacert: "/etc/ssl/certs/ca-certificates.crt"
+    cacert: "{{ trusted_ca_bundle }}"
     action: "token_get"
   run_once: true
   register: domain_scoped_token_result
@@ -33,7 +33,7 @@
   become: yes
   keystone_v3:
     endpoint: "{{ keystone_admin_endpoint }}/v3"
-    cacert: "/etc/ssl/certs/ca-certificates.crt"
+    cacert: "{{ trusted_ca_bundle }}"
     login_token: "{{ domain_scoped_token_result.result }}"
     action: "create_service"
     service_name: "{{ item.service_name }}"
@@ -48,7 +48,7 @@
   become: yes
   keystone_v3:
     endpoint: "{{ keystone_admin_endpoint }}/v3"
-    cacert: "/etc/ssl/certs/ca-certificates.crt"
+    cacert: "{{ trusted_ca_bundle }}"
     login_token: "{{ domain_scoped_token_result.result }}"
     action: "create_endpoint"
     service_name: "{{ item.service_name }}"

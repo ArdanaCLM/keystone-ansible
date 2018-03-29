@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #
 # (c) Copyright 2015-2016 Hewlett Packard Enterprise Development LP
-# (c) Copyright 2017 SUSE LLC
+# (c) Copyright 2017-2018 SUSE LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -877,7 +877,7 @@ def main():
         login_domain_name=dict(default=None),
         login_token=dict(default=None, no_log=True),
         insecure=dict(default=None),
-        cacert=dict(default="/etc/ssl/certs/ca-certificates.crt"),
+        cacert=dict(default="/etc/ssl/ca-bundle.pem"),
 
         endpoint=dict(default=None),
         description=dict(default="Created by Ansible keystone_v3"),
