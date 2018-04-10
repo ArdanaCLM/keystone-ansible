@@ -29,5 +29,6 @@ key_api_packages:
   - python-httplib2
   - xmlstarlet
 # - xmlsec1  # TODO(fergal): uncomment once Legacy CI support includes package
+# - libxmlsec1-openssl1 # TODO(gyee): uncomment once Legacy CI support includes package
 
 shibd_user: shibd
