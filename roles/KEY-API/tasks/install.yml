@@ -28,7 +28,7 @@
     - keystone
 
 # TODO(fergal) - remove this extra package install action once the legacy
-# CI process includes the xmlsec1 package.
+# CI process includes the xmlsec1 and its dependent package(s).
 - name: KEY-API | install | Install non-legacy keystone dependencies
   become: yes
   package:
@@ -36,6 +36,7 @@
     name: "{{ item }}"
   with_items:
     - xmlsec1
+    - libxmlsec1-openssl1
   when:
     - not (deployer_media_legacy_layout | bool)
   tags:
