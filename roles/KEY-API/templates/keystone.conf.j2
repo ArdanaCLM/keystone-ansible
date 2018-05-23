@@ -53,7 +53,7 @@ admin_project_name = {{ keystone_cloudadmin_project }}
 
 [token]
 expiration = 14400
-provider = uuid
+provider = {{ keystone_token_provider }}
 
 [fernet_tokens]
 key_repository ={{ keystone_fernet_dir }}

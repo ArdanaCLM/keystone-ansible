@@ -1,0 +1,66 @@
+#
+# (c) Copyright 2018 SUSE LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+- name: keystone-monitor | _set_fernet_master_node_monitor |
+        Setup default email notification method
+  monasca_notification_method:
+    name: "Default Email"
+    type: 'EMAIL'
+    address: "root@localhost"
+    keystone_url: "{{ keystone_admin_endpoint }}/v3"
+    keystone_user: "{{ keystone_admin_user }}"
+    keystone_password: "{{ keystone_admin_user_pwd }}"
+    keystone_project: "{{ keystone_admin_project_name }}"
+    keystone_project_domain: "{{ keystone_default_domain }}"
+    keystone_user_domain: "{{ keystone_default_domain }}"
+    monasca_api_url: "{{ monasca_alarm_definition_api_url }}"
+    overwrite: false
+  register: keystone_default_notification_result
+  run_once: true
+
+- name: keystone-monitor | _set_fernet_master_node_monitor | Set hostname
+  set_fact:
+    fernet_master_hostname: >-
+      {{ hostvars[found_fernet_master_node].host.my_dimensions.hostname }}
+
+- name: keystone-monitor | _set_fernet_master_node_monitor | Set control_plane
+  set_fact:
+    fernet_master_control_plane: >-
+      {{ hostvars[found_fernet_master_node].host.my_dimensions.control_plane }}
+
+- name: keystone-monitor | _set_fernet_master_node_monitor |
+        Create fernet master node alarm definition
+  monasca_alarm_definition:
+    name: "Fernet Master"
+    description: "Check to make sure Fernet Master node still alive."
+    severity: "CRITICAL"
+    expression: >-
+      host_alive_status{hostname={{ fernet_master_hostname }},
+      control_plane={{ fernet_master_control_plane }}} > 0
+    match_by: ["hostname"]
+    keystone_url: "{{ keystone_admin_endpoint }}/v3"
+    keystone_user: "{{ keystone_admin_user }}"
+    keystone_password: "{{ keystone_admin_user_pwd }}"
+    keystone_project: "{{ keystone_admin_project_name }}"
+    keystone_project_domain: "{{ keystone_default_domain }}"
+    keystone_user_domain: "{{ keystone_default_domain }}"
+    monasca_api_url: "{{ monasca_alarm_definition_api_url }}"
+    ok_actions:
+      - "{{ keystone_default_notification_result.notification_method_id }}"
+    undetermined_actions:
+      - "{{ keystone_default_notification_result.notification_method_id }}"
+    alarm_actions:
+      - "{{ keystone_default_notification_result.notification_method_id }}"
+  run_once: true

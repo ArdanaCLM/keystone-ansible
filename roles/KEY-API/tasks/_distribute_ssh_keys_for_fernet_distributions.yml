@@ -1,0 +1,38 @@
+#
+# (c) Copyright 2018 SUSE LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+- name: KEY-API | _distribute_ssh_keys_for_fernet_distributions |
+        Read the Fernet dist ssh public key
+  become: yes
+  command: cat {{ keystone_home_dir }}/.ssh/id_rsa.pub
+  register: keystone_ssh_pub_key_result
+  delegate_to: "{{ fernet_master_node }}"
+  tags:
+    - keystone
+
+# NOTE(gyee): we are restricting the given SSH key for the singular purpose
+# of Fernet key distribution. Anything else will require explicit permission.
+- name: KEY-API | _distribute_ssh_keys_for_fernet_distributions |
+        Add dist public key to authorized_keys
+  become: yes
+  authorized_key:
+    user: "{{ keystone_user }}"
+    state: present
+    key: "{{ keystone_ssh_pub_key_result.stdout }}"
+    key_options: >
+      command="rsync --server -vlogDtprze.iLsC
+      --delete . {{ keystone_fernet_dir }}"
+  tags:
+    - keystone

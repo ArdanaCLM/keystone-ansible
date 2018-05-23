@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+#
+# NOTE: this script was borrowed from upstream
+#
+# https://github.com/openstack/openstack-ansible-os_keystone/blob/master/
+# templates/keystone-fernet-rotate.sh.j2
+#
+# Copyright 2015, Rackspace US, Inc.
+# (c) Copyright 2018 SUSE LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+function autorotate {
+    # Rotate the keys
+    {{ keystone_bin_dir }}/keystone-manage fernet_rotate \
+                                       --keystone-user "{{ keystone_user }}" \
+                                       --keystone-group "{{ keystone_group }}"
+    {% for host in keystone_hosts %}
+
+    {% if inventory_hostname != host %}
+
+    # Fernet sync job to "{{ host }}"
+    rsync -avz \
+          --delete \
+          {{ keystone_fernet_dir }}/ \
+          {{ keystone_user }}@{{ hostvars[host].host.my_dimensions.hostname }}:{{ keystone_fernet_dir }}/
+
+    {%- endif %}
+
+    {%- endfor %}
+
+}
+
+if [ "$(id -u)" == "0" ];then
+# Change the script context to always execute as the "{{ keystone_user }}" user.
+su - "{{ keystone_user }}" -s "/bin/bash" -c bash << EOC
+    {{ keystone_fernet_auto_rotation_script }}
+EOC
+elif [ "$(whoami)" == "{{ keystone_user }}" ];then
+    logger $(autorotate)
+else
+    echo "Failed - you do not have permission to rotate, or you've executed the job as the wrong user."
+    exit 99
+fi

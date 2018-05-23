@@ -1,0 +1,44 @@
+#
+# (c) Copyright 2018 SUSE LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+- name: KEY-API | _create_fernet_keys | Check Fernet Keys
+  become: yes
+  stat:
+    path: "{{ keystone_fernet_dir }}/0"
+  register: check_fernet_key_result
+  tags:
+    - keystone
+
+- name: KEY-API | _create_fernet_keys | Setup Fernet Keys
+  become: yes
+  become_user: "{{ keystone_user }}"
+  command: >
+    {{ keystone_bin_dir }}/keystone-manage fernet_setup
+    --keystone-user {{ keystone_user }}
+    --keystone-group  {{ keystone_group }}
+  when: not check_fernet_key_result.stat.exists
+  tags:
+    - keystone
+
+- name: KEY-API | _create_fernet_keys | Rotate Fernet Keys
+  become: yes
+  become_user: "{{ keystone_user }}"
+  command: >
+    {{ keystone_bin_dir }}/keystone-manage fernet_rotate
+    --keystone-user {{ keystone_user }}
+    --keystone-group  {{ keystone_group }}
+  when: check_fernet_key_result.stat.exists
+  tags:
+    - keystone

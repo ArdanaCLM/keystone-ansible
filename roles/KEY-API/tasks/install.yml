@@ -59,16 +59,40 @@
   tags:
     - keystone
 
+# If keystone user already exist, that means we are in the upgrade
+# situation. In that case, we must stop any process that is owned by
+# the keystone user before making usermod.
+- name: KEY-API | install | Stop any process owned by keystone user
+  include: stop.yml
+  when: getent_passwd[keystone_user] is not none
+
+- name: KEY-API | install | Wait for keystone owned processes to exit
+  wait_for:
+    timeout: 30
+  when: getent_passwd[keystone_user] is not none
+
+# NOTE(gyee): we are setting keystone user shell to '/bin/bash/ in order
+# to enable keystone user to do rsync over ssh for Fernet key distribution.
 - name: KEY-API | install | Add user '{{ keystone_user }}'
   become: yes
   user:
     name: "{{ keystone_user }}"
     group: "{{ keystone_group }}"
-    createhome: no
+    createhome: yes
     home: "{{ keystone_home_dir }}"
-    shell: /bin/true
+    generate_ssh_key: yes
+    shell: /bin/bash
     state: present
-  when: getent_passwd["{{ keystone_user }}"] is none
+  register: ardana_notify_keystone_change
+  tags:
+    - keystone
+
+- name: KEY-API | install | Update keystone user home dir permission
+  become: yes
+  file:
+    path: "{{ keystone_home_dir }}"
+    mode: 0750
+    state: directory
   tags:
     - keystone
 

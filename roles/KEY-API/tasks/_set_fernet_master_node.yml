@@ -14,18 +14,21 @@
 # under the License.
 #
 ---
+# see if fernet master node alread exist
+- include: _find_fernet_master_node.yml
 
-- name: KEY-API | _distribute_fernet_keys | Distribute Fernet key dir
-  become: yes
-  become_user: "{{ keystone_user }}"
-  synchronize:
-    src: "{{ keystone_fernet_dir }}"
-    dest: "{{ keystone_fernet_dir }}"
-    archive: yes
-    delete: yes
-    compress: yes
-    set_remote_user: no
-  when: inventory_hostname != fernet_master_node
-  delegate_to: "{{ fernet_master_node }}"
+# If the master node exist, fernet_master_node should be defined. Otherwise,
+# we'll designate the first node as the master node.
+- name: KEY-API | _set_fernet_master_node | Set Fernet master node
+  set_fact:
+    fernet_master_node: "{{ keystone_hosts[0] }}"
+  when: found_fernet_master_node is undefined
+  tags:
+    - keystone
+
+- name: KEY-API | _set_fernet_master_node | Set found Fernet master node
+  set_fact:
+    fernet_master_node: "{{ found_fernet_master_node }}"
+  when: found_fernet_master_node is defined
   tags:
     - keystone

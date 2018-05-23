@@ -1,6 +1,6 @@
 #
 # (c) Copyright 2015-2016 Hewlett Packard Enterprise Development LP
-# (c) Copyright 2017 SUSE LLC
+# (c) Copyright 2017-2018 SUSE LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -15,27 +15,21 @@
 # under the License.
 #
 ---
-- name: KEY-API | _configure_fernet | Setup Fernet  Keys
-  command: "{{ keystone_bin_dir }}/keystone-manage  fernet_setup
-              --keystone-user {{ keystone_user }}
-              --keystone-group  {{ keystone_user }}"
-  when: inventory_hostname ==  keystone_hosts[0]
-  become: yes
-  become_user: "{{ keystone_user }}"
-  tags:
-    - keystone
+# determine the master node
+- include: _set_fernet_master_node.yml
 
-- include:  _distribute_fernet_keys.yml
+# setup the Fernet keys on the master node
+- name: KEY-API | _configure_fernet | Create Fernet keys on master node
+  include: _create_fernet_keys.yml
+  when: inventory_hostname == fernet_master_node
 
-- name: KEY-API | _configure_fernet | configure fernet provider
-  ini_file:
-      dest: "{{ keystone_conf_dir }}/keystone.conf"
-      section:  token
-      option: provider
-      value: fernet
-      owner: "{{ keystone_user }}"
-      group: "{{ keystone_group }}"
-  register: ardana_notify_keystone_change
-  become: yes
-  tags:
-    - keystone
+# setup the SSH keys for Fernet key distribution as it is using rsync
+- name: KEY-API | _configure_fernet | Distribute the SSH keys
+  include: _distribute_ssh_keys_for_fernet_distributions.yml
+  when: inventory_hostname != fernet_master_node
+
+# now distribute the Fernet keys
+- include: _distribute_fernet_keys.yml
+
+# setup Fernet key auto rotation
+- include: _setup_fernet_auto_rotation.yml
