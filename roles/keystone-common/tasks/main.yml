@@ -1,6 +1,6 @@
 #
 # (c) Copyright 2015-2016 Hewlett Packard Enterprise Development LP
-# (c) Copyright 2017 SUSE LLC
+# (c) Copyright 2017-2018 SUSE LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -42,3 +42,52 @@
     - keystone_debug
   when: keystone_debug is defined
   run_once: True
+
+# NOTE(gyee) check to see what the current token provider is. If this is a new
+# install, it will return an empty string as keystone.conf may not have
+# existed yet. This logic will work if we don't also configure a "provider" for
+# credential. Right now, the only provider for credential is "fernet" so we
+# should be fine. In the future, if more than one providers are supported for
+# credential, we'll need to update this logic. Better yet, upgrade to
+# Ansible 2.x and use the ini module and this problem will magically
+# disappear. :-)
+# FIXME(gyee): use Ansible ini module for this when we upgrade to
+# Ansible 2.x.
+- name: keystone-common | main | Look for the default token provider
+  become: yes
+  shell: >-
+    grep '^provider\s*=' {{ keystone_venv_install_conf_dir }}/keystone.conf
+    2>&1 | grep '^provider\s*=' | sed 's/.*=\s*//'
+  register: lookup_keystone_token_provider_result
+  tags:
+    - keystone
+
+- name: keystone-common | main | Display current Keystone token provider
+  debug:
+    msg: "{{ lookup_keystone_token_provider_result.stdout }}"
+  tags:
+    - keystone
+    - keystone_debug
+  when: keystone_debug is defined
+
+# NOTE(gyee): in an upgrade situation where --limit is used, we do not want
+# to change the current token provider as we will end up with some controllers
+# using Fernet token provider while others still using UUID. This will be
+# disastrous as some tokens does not validate. We DO NOT support changing
+# token provider to Fernet until all the nodes are upgraded and ready as
+# Fernet required all the token-signing keys are in-sync for all the nodes
+# at all times.
+- name: keystone-common | main | Set token provider
+  set_fact:
+    keystone_token_provider: >-
+      {{ lookup_keystone_token_provider_result.stdout }}
+  when: play_hosts|length != keystone_hosts|length and
+        lookup_keystone_token_provider_result.stdout != ""
+
+- name: keystone-common | main | Display Keystone token provider
+  debug:
+    msg: "Token provider is {{ keystone_token_provider }}"
+  tags:
+    - keystone
+    - keystone_debug
+  when: keystone_debug is defined
