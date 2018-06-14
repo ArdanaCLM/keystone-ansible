@@ -38,8 +38,10 @@ keystone_wsgi_socket_timeout:  600
 #########################################################
 # Fernet Token
 #########################################################
-# Optional non-core features that can be enabled/disabled
-keystone_configure_fernet: False
+# Enable Fernet token by default as UUID token was deprecated.
+# You may revert back to UUID token provider by setting this
+# value to False, for disaster recovery purposes.
+keystone_configure_fernet: True
 
 #########################################################
 # Enable TLS transport for mysql
