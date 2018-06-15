@@ -36,3 +36,18 @@
       --delete . {{ keystone_fernet_dir }}"
   tags:
     - keystone
+
+# NOTE(gyee): by do this we are adding the host key for the given host
+# to the Fernet master node's known_hosts file so that we don't have
+# to turn off strict host key checking later when we are doing Fernet
+# key synchronization.
+- name: KEY-API | _distribute_ssh_keys_for_fernet_distributions |
+        generate SSH host key
+  become: yes
+  become_user: "{{ keystone_user }}"
+  command: >
+    ssh -o StrictHostKeyChecking=no
+    {{ host.bind['KEY-API'].internal.ip_address }} date
+  delegate_to: "{{ fernet_master_node }}"
+  tags:
+    - keystone
