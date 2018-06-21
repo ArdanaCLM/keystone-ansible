@@ -1,6 +1,6 @@
 #
 # (c) Copyright 2015-2016 Hewlett Packard Enterprise Development LP
-# (c) Copyright 2017 SUSE LLC
+# (c) Copyright 2017-2018 SUSE LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -45,3 +45,15 @@ keystone_configure_fernet: False
 # Enable TLS transport for mysql
 #########################################################
 keystone_enable_tls_for_mysql: True
+
+#########################################################
+# Addition roles to be created and assigned to the
+# 'admin' user for the 'admin' project. The 'admin'
+# project is used to manage the OpenStack cloud.
+#########################################################
+keystone_extra_roles_for_admin_user_and_admin_project:
+  - swiftoperator
+  - glance_admin
+  - cinder_admin
+  - nova_admin
+  - neutron_admin
