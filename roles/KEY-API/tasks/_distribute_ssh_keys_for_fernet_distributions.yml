@@ -22,8 +22,8 @@
   tags:
     - keystone
 
-# NOTE(gyee): we are restricting the given SSH key for the singular purpose
-# of Fernet key distribution. Anything else will require explicit permission.
+# NOTE(gyee): we first restrict the command to 'date' so the next task
+# can add the host fingerprint to the known_hosts file of the master.
 - name: KEY-API | _distribute_ssh_keys_for_fernet_distributions |
         Add dist public key to authorized_keys
   become: yes
@@ -32,8 +32,7 @@
     state: present
     key: "{{ keystone_ssh_pub_key_result.stdout }}"
     key_options: >
-      command="rsync --server -vlogDtprze.iLsC
-      --delete . {{ keystone_fernet_dir }}"
+      command="date"
   tags:
     - keystone
 
@@ -47,7 +46,23 @@
   become_user: "{{ keystone_user }}"
   command: >
     ssh -o StrictHostKeyChecking=no
-    {{ host.bind['KEY-API'].internal.ip_address }} date
+    {{ host.bind['KEY_API'].internal.ip_address }} date
   delegate_to: "{{ fernet_master_node }}"
+  tags:
+    - keystone
+
+
+# NOTE(gyee): we are restricting the given SSH key for the singular purpose
+# of Fernet key distribution. Anything else will require explicit permission.
+- name: KEY-API | _distribute_ssh_keys_for_fernet_distributions |
+        Add dist public key to authorized_keys
+  become: yes
+  authorized_key:
+    user: "{{ keystone_user }}"
+    state: present
+    key: "{{ keystone_ssh_pub_key_result.stdout }}"
+    key_options: >
+      command="rsync --server -vlogDtprze.iLsC
+      --delete . {{ keystone_fernet_dir }}"
   tags:
     - keystone
