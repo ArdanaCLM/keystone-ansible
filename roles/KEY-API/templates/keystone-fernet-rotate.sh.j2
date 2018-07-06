@@ -33,7 +33,7 @@ function autorotate {
     rsync -avz \
           --delete \
           {{ keystone_fernet_dir }}/ \
-          {{ keystone_user }}@{{ hostvars[host].host.my_dimensions.hostname }}:{{ keystone_fernet_dir }}/
+          {{ keystone_user }}@{{ hostvars[host].host.bind.KEY_API.internal.ip_address }}:{{ keystone_fernet_dir }}/
 
     {%- endif %}
 
