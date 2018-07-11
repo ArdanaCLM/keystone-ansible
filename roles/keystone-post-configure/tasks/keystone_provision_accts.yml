@@ -47,6 +47,20 @@
   tags:
     - keystone
 
+- name: keystone-post-configure | keystone_provision_accts | Create extra roles
+  keystone_v3:
+    login_token: "{{ domain_scoped_token_result.result }}"
+    endpoint: "{{ keystone_internal_endpoint }}/v3"
+    cacert: "{{ trusted_ca_bundle }}"
+    action: "create_role"
+    role_name: "{{ item }}"
+    description: "Bootstrap  roles  created via keystone deploy"
+  with_items: "{{ keystone_extra_roles_for_admin_user_and_admin_project }}"
+  when: keystone_extra_roles_for_admin_user_and_admin_project is defined
+  run_once: true
+  tags:
+    - keystone
+
 - name: keystone-post-configure | keystone_provision_accts | Create bootstrap tenants
   become: yes
   keystone_v3:
@@ -165,6 +179,25 @@
     role_name: "{{ keystone_admin_role }}"
     user_domain_name: "{{ keystone_v2_user_domain_name }}"
     project_domain_name: "{{ keystone_v2_project_domain_name }}"
+  run_once: true
+  tags:
+    - keystone
+
+- name: keystone-post-configure | keystone_provision_accts |
+        Grant admin user addition roles to admin project
+  become: yes
+  keystone_v3:
+    login_token: "{{ domain_scoped_token_result.result }}"
+    endpoint: "{{ keystone_internal_endpoint }}/v3"
+    cacert: "{{ trusted_ca_bundle }}"
+    action: "grant_project_role"
+    user_name: "{{ keystone_admin_user }}"
+    project_name: "{{ keystone_admin_project_name }}"
+    role_name: "{{ item }}"
+    user_domain_name: "{{ keystone_v2_user_domain_name }}"
+    project_domain_name: "{{ keystone_v2_project_domain_name }}"
+  with_items: "{{ keystone_extra_roles_for_admin_user_and_admin_project }}"
+  when: keystone_extra_roles_for_admin_user_and_admin_project is defined
   run_once: true
   tags:
     - keystone
