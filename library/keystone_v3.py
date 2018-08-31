@@ -164,8 +164,8 @@ def _delete_user(ks_client, user=None):
     ks_client.users.update(user=user, enabled=False)
     ks_client.users.delete(user=user)
 
-def _update_user(ks_client, user=None, password=None):
-    ks_client.users.update(user=user, password=password)
+def _update_user(ks_client, user=None, **kwargs):
+    ks_client.users.update(user=user, **kwargs)
 
 def _find_project(ks_client, domain_name=None, project_name=None):
     domain = _find_domain(ks_client, domain_name=domain_name)
@@ -313,7 +313,9 @@ def create_user(ks_client, user_name=None, user_password=None, domain_name=None,
     user = _find_user(ks_client, user_name=user_name, domain_name=domain_name)
 
     if user:
-        return (False,  user)
+        kwargs = dict(password=user_password, email=None, description=None)
+        _update_user(ks_client, user=user, **kwargs)
+        return (True, user)
 
     # User with that name doesn't exist
     user = _create_user(ks_client, user_name=user_name,
