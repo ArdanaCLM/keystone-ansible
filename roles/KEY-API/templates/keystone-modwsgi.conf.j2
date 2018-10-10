@@ -40,7 +40,7 @@ keystone_venv_dir }}/lib/python2.7/site-packages/ display-name={{ keystone_group
     SetEnvIf Request_URI "^" any_request=1
     SetEnvIf X-Forwarded-For "^.*\..*\..*\..*" forwarded=1
     # Identify load balance health check requests
-    SetEnvIf Request_Method "^LBCHK$" lb-ping=1
+    SetEnvIf Request_URI "^/healthcheck$" lb-ping=1
     # Assuming all the monitoring pings from HAProxy are configured with the X-HAProxy-Ping header set to "true"
     SetEnvIfNoCase X-HAProxy-Ping "true" proxy-ping=1
 
@@ -111,7 +111,7 @@ keystone_venv_dir }}/lib/python2.7/site-packages/ display-name={{ keystone_group
     SetEnvIf Request_URI "^" any_request=1
     SetEnvIf X-Forwarded-For "^.*\..*\..*\..*" forwarded=1
     # Identify load balance health check requests
-    SetEnvIf Request_Method "^LBCHK$" lb-ping=1
+    SetEnvIf Request_URI "^/healthcheck$" lb-ping=1
     # Assuming all the monitoring pings from HAProxy are configured with the X-HAProxy-Ping header set to "true"
     SetEnvIfNoCase X-HAProxy-Ping "true" proxy-ping=1
 
