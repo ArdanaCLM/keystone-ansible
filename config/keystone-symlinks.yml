@@ -20,7 +20,6 @@
 ---
 symlinks:
   "keystone/keystone.conf.j2": roles/KEY-API/templates/keystone.conf.j2
-  "keystone/keystone-paste.ini.j2": roles/KEY-API/templates/keystone-paste.ini.j2
   "keystone/keystone_deploy_config.yml": roles/keystone-common/vars/keystone_deploy_config.yml
   "keystone/keystone_configure_ldap_sample.yml": roles/KEY-API/files/samples/keystone_configure_ldap_sample.yml
   "keystone/keystone_configure_ldap_certs_sample.yml": roles/KEY-API/files/samples/keystone_configure_ldap_certs_sample.yml

@@ -71,7 +71,6 @@
     group: "{{ keystone_group }}"
     mode: 0600
   with_items:
-    - { src: keystone-paste.ini.j2 , dest: keystone-paste.ini }
     - { src: policy.v3cloudsample.json , dest: policy.json }
     - { src: keystone.conf.j2 , dest: keystone.conf }
     - { src: logging.conf.j2 , dest: logging.conf }
@@ -117,7 +116,6 @@
     - keystone.conf
     - logging.conf
     - policy.json
-    - keystone-paste.ini
   become: yes
   ignore_errors: True
   tags:
@@ -132,7 +130,6 @@
     group: "{{ keystone_group }}"
     state: link
   with_items:
-    - keystone-paste.ini
     - keystone.conf
     - logging.conf
     - policy.json

@@ -52,7 +52,6 @@
     group: "{{ keystone_group }}"
     mode: 0600
   with_items:
-    - { src: keystone-paste.ini.j2 , dest: keystone-paste.ini }
     - { src: policy.v3cloudsample.json , dest: policy.json }
     - { src: logging.conf.j2 , dest: logging.conf }
   become: yes
