@@ -160,7 +160,7 @@
     "identity:revoke_token": "rule:cloud_admin or rule:admin_or_owner",
 
     "identity:create_trust": "user_id:%(trust.trustor_user_id)s",
-    "identity:get_trust": "rule:admin_or_owner",
+    "identity:get_trust": "",
     "identity:list_trusts": "",
     "identity:list_roles_for_trust": "",
     "identity:check_role_for_trust": "",
