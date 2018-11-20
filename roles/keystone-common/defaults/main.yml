@@ -125,3 +125,6 @@ keystone_audit_log_base_location: "{{ KEY.audit.dir }}"
 
 # This is for federation configuration
 keystone_shibd_conf_dir: "/etc/shibboleth"
+
+memcached_servers: "{% for x in KEY_API.consumes_FND_MEM.members.private %}{{ x.host }}:{{ x.port }}{%if not loop.last %},{% endif %}{% endfor %}"
+

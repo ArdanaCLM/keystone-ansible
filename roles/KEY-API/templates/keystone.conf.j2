@@ -37,6 +37,12 @@ rabbit_userid = "{{ keystone_rabbit_user }}"
 rabbit_password = "{{ keystone_rabbit_password }}"
 rabbit_use_ssl = {{ keystone_rabbit_use_ssl }}
 
+[cache]
+backend = oslo_cache.memcache_pool
+enabled = True
+memcache_servers = {{ memcached_servers }}
+memcache_socket_timeout = 1
+
 [database]
 connection = {{ keystone_database_connection_string }}
 # One connection per process which is active in the pool
