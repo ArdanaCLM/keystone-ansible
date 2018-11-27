@@ -38,7 +38,6 @@
     description: "Bootstrap  roles  created via keystone deploy"
   with_items:
     - "{{ keystone_service_role }}"
-    - "{{ keystone_member_role }}"
     - "{{ keystone_monitor_role }}"
     - "{{ keystone_project_observer_role }}"
     - "{{ keystone_domain_observer_role }}"

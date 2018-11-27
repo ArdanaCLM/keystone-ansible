@@ -78,7 +78,7 @@ keystone_monitoring_project_name:  "{{ KEY_API.vars.keystone_monitoring_tenant }
 
 keystone_admin_role: "{{ KEY_API.vars.keystone_admin_role }}"
 keystone_keystoneadmin_role: "{{ KEY_API.vars.keystone_KeystoneAdmin_role }}"
-keystone_member_role: "{{ KEY_API.vars.keystone_member_role }}"
+keystone_member_role: member
 keystone_service_role: "{{ KEY_API.vars.keystone_service_role }}"
 keystone_monitor_role: "{{ KEY_API.vars.keystone_monitoring_role }}"
 keystone_project_observer_role: "{{ KEY_API.vars.keystone_project_observer_role }}"
