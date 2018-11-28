@@ -473,6 +473,9 @@ def _grant_or_revoke_project_role(ks_client, role_name=None, user_name=None, gro
                                   group_domain_name=group_domain_name, project_name=project_name,
                                   user_domain_name=user_domain_name, project_domain_name=project_domain_name)
 
+    if not role:
+        raise Exception("Role name=%s doesn't exist" %(role_name))
+
     if assignment_status and grant:
         return (False, "Already assigned")
 
