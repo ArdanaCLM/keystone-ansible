@@ -39,6 +39,6 @@
     {{ keystone_bin_dir }}/keystone-manage fernet_rotate
     --keystone-user {{ keystone_user }}
     --keystone-group  {{ keystone_group }}
-  when: check_fernet_key_result.stat.exists
+  when: not check_fernet_key_result.stat.exists
   tags:
     - keystone
