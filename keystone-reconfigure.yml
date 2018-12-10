@@ -42,4 +42,3 @@
         KEY_CLI.vars.keystone_client_python_interpreter }}"
 
 - include: keystone-configure-monasca.yml
-- include: keystone-configure-fernet-monitoring.yml
