@@ -37,8 +37,6 @@
   with_items:
     - xmlsec1
     - libxmlsec1-openssl1
-  when:
-    - not (deployer_media_legacy_layout | bool)
   tags:
     - keystone
 
