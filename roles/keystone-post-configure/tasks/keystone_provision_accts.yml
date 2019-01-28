@@ -89,9 +89,12 @@
     action: "grant_project_role"
     user_name: "{{ keystone_admin_user }}"
     project_name: "{{ keystone_admin_project_name }}"
-    role_name: "{{ keystone_admin_role }}"
+    role_name: "{{ item }}"
     user_domain_name: "{{ keystone_v2_user_domain_name }}"
     project_domain_name: "{{ keystone_v2_project_domain_name }}"
+  with_items:
+    - "{{ keystone_project_observer_role }}"
+    - "{{ keystone_admin_role }}"
   run_once: true
   tags:
     - keystone
@@ -175,9 +178,12 @@
     action: "grant_project_role"
     user_name: "{{ keystone_admin_user }}"
     project_name: "{{ keystone_service_project_name }}"
-    role_name: "{{ keystone_admin_role }}"
+    role_name: "{{ item }}"
     user_domain_name: "{{ keystone_v2_user_domain_name }}"
     project_domain_name: "{{ keystone_v2_project_domain_name }}"
+  with_items:
+    - "{{ keystone_project_observer_role }}"
+    - "{{ keystone_admin_role }}"
   run_once: true
   tags:
     - keystone
