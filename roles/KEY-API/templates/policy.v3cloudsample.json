@@ -49,7 +49,7 @@
     "identity:update_endpoint": "rule:cloud_admin",
     "identity:delete_endpoint": "rule:cloud_admin",
 
-    "identity:get_domain": "rule:cloud_admin or rule:admin_and_matching_domain_id or token.project.domain.id:%(target.domain.id)s",
+    "identity:get_domain": "rule:cloud_admin or rule:admin_and_matching_domain_id or project_domain_id:%(target.domain.id)s",
     "identity:list_domains": "rule:domain_observer or rule:cloud_admin or rule:admin_required and domain_name:%(name)s",
     "identity:create_domain": "rule:cloud_admin",
     "identity:update_domain": "rule:cloud_admin",
