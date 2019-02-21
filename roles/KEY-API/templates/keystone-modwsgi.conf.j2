@@ -27,6 +27,7 @@ keystone_venv_dir }}/lib/python2.7/site-packages/ display-name={{ keystone_group
     WSGIProcessGroup keystone-admin
     WSGIScriptAlias / /var/www/keystone/admin
     WSGIApplicationGroup %{GLOBAL}
+    WSGIPassAuthorization on
 
     KeepAlive off
 
@@ -76,6 +77,7 @@ keystone_venv_dir }}/lib/python2.7/site-packages/ display-name={{ keystone_group
     WSGIProcessGroup keystone-main
     WSGIScriptAlias / /var/www/keystone/main
     WSGIApplicationGroup %{GLOBAL}
+    WSGIPassAuthorization on
 
     KeepAlive off
 
