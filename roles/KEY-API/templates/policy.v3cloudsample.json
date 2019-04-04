@@ -29,7 +29,7 @@
     "service_admin_or_owner": "rule:service_or_admin or rule:owner",
 
     "default": "rule:admin_required",
-    "domain_observer": "role:{{ keystone_domain_observer_role }} and token.project.domain.id:{{keystone_admin_domain_id}}",
+    "domain_observer": "role:{{ keystone_domain_observer_role }} and project_domain_id:{{keystone_admin_domain_id}}",
 
     "identity:get_region": "",
     "identity:list_regions": "",
