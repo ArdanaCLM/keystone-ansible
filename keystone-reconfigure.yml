@@ -42,3 +42,7 @@
         KEY_CLI.vars.keystone_client_python_interpreter }}"
 
 - include: keystone-configure-monasca.yml
+
+# If radosgw is configured, service endpoints for swift need updates
+- include: ses-reconfigure.yml
+- include: _swift-post-configure.yml
