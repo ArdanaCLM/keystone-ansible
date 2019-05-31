@@ -27,8 +27,8 @@ keystone_logstash_loglevel:  INFO
 # To handle 100 concurrent connections count = 15 is more than enough
 # Most of the traffice goes to internal vip which is controlled by
 # public procoess count
-keystone_wsgi_admin_process_count:  "{{ [5, [2, ansible_processor_vcpus / 2] | max] | min }}"
-keystone_wsgi_public_process_count:  "{{ [10, [2, (ansible_processor_vcpus / 2) * 3] | max] | min }}"
+keystone_wsgi_admin_process_count:  "{{ [5, [2, ansible_processor_vcpus / 2] | max] | min | int }}"
+keystone_wsgi_public_process_count:  "{{ [10, [2, (ansible_processor_vcpus / 2) * 3] | max] | min | int }}"
 
 #socket-timeout option to WSGIDaemonProcess to allow the timeout on indvidual
 # read/writes on the socket connection between the Apache child worker and
