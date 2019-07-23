@@ -51,6 +51,9 @@
   roles:
     - role: keystone-post-configure
   tasks:
+    - include: roles/keystone-post-configure/tasks/keystone_conf.yml
+      ansible_python_interpreter: "{{
+        KEY_CLI.vars.keystone_client_python_interpreter }}"
     - include: roles/keystone-post-configure/tasks/keystone_provision_accts.yml
       ansible_python_interpreter: "{{
         KEY_CLI.vars.keystone_client_python_interpreter }}"
