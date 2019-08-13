@@ -21,7 +21,7 @@
 
 - name: KEY-API | status | Register keystone status
   uri:
-    url: "http://{{ keystone_admin_listen_ip }}:{{ keystone_admin_port }}"
+    url: "http://{{ keystone_admin_listen_ip | ipwrap }}:{{ keystone_admin_port }}"
     status_code: 300
     timeout: 300
   register: keystone_status_result

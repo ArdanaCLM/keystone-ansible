@@ -30,7 +30,7 @@
   monasca_agent_plugin:
     name: "httpcheck"
     args: "use_keystone=False \
-           url=http://{{ keystone_internal_listen_ip }}:{{
+           url=http://{{ keystone_internal_listen_ip | ipwrap }}:{{
                keystone_internal_port }}/v3 \
            dimensions=service:identity-service,\
                        component:keystone-api,\
@@ -46,7 +46,7 @@
   monasca_agent_plugin:
     name: "httpcheck"
     args: "use_keystone=False \
-           url=http://{{ keystone_admin_listen_ip }}:{{
+           url=http://{{ keystone_admin_listen_ip | ipwrap }}:{{
                keystone_admin_port }}/v3 \
            dimensions=service:identity-service,\
                        component:keystone-api,\
