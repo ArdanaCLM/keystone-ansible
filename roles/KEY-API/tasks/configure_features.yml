@@ -16,6 +16,20 @@
 #
 ---
 
+- name: KEY-API | configure_features | Set oidc_crypto_passphrase
+  set_fact:
+    oidc_crypto_passphrase: "{{ keystone_openid_connect_conf.crypto_passphrase }}"
+  when: keystone_openid_connect_conf is defined
+  tags:
+    - keystone
+
+- name: KEY-API | configure_features | Create random OIDC crypto passphrase
+  set_fact:
+    oidc_crypto_passphrase:  "{{ lookup('password', '/tmp/oidcpassphrase chars=ascii_letters,digits,hexdigits') }}"
+  when: keystone_openid_connect_conf is defined and oidc_crypto_passphrase == ""
+  tags:
+    - keystone
+
 - include: _configure_deployment_options.yml
 
 - include: _configure_ldap.yml
@@ -48,6 +62,9 @@
 
 - include: _configure_websso_with_adfs.yml
   when: keystone_trusted_idp is defined and keystone_trusted_idp == "adfs"
+
+- include: _configure_websso_with_openid_connect.yml
+  when: keystone_openid_connect_conf is defined
 
 - include: _configure_x509auth.yml
   when: keystone_x509auth_conf is defined

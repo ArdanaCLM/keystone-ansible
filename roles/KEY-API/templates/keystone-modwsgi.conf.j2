@@ -94,6 +94,11 @@ keystone_venv_dir }}/lib/python2.7/site-packages/ display-name={{ keystone_group
       SetHandler shib
     </Location>
 
+    # NOTE(gyee): we have to enable ShibCompatValidUser so it doesn't
+    # interfere with the other auth modules's valid-user settings.
+    # See https://bugs.launchpad.net/ubuntu/+source/shibboleth-sp2/+bug/1358284
+    ShibCompatValidUser On
+
     <LocationMatch /v3/OS-FEDERATION/identity_providers/.*?/protocols/saml2/auth>
       ShibRequestSetting requireSession 1
       AuthType shibboleth
@@ -109,6 +114,33 @@ keystone_venv_dir }}/lib/python2.7/site-packages/ display-name={{ keystone_group
       ShibExportAssertion Off
       Require valid-user
     </Location>
+
+{% if keystone_openid_connect_conf is defined %}
+    # see https://github.com/zmartzone/mod_auth_openidc/blob/master/auth_openidc.conf
+    OIDCClaimPrefix "OIDC-"
+    OIDCResponseType "{{ keystone_openid_connect_conf.response_type }}"
+    OIDCScope "{{ keystone_openid_connect_conf.scope }}"
+    OIDCProviderMetadataURL "{{ keystone_openid_connect_conf.metadata_url }}"
+    OIDCClientID  "{{ keystone_openid_connect_conf.client_id }}"
+    OIDCClientSecret "{{ keystone_openid_connect_conf.client_secret }}"
+    OIDCCryptoPassphrase "{{ oidc_crypto_passphrase }}"
+    OIDCRedirectURI "{{ keystone_openid_connect_conf.redirect_uri }}"
+
+    <Location /v3/OS-FEDERATION/identity_providers/{{ keystone_openid_connect_conf.identity_provider }}/protocols/openid/auth>
+      Require valid-user
+      AuthType openid-connect
+    </Location>
+
+    <Location /v3/auth/OS-FEDERATION/websso/openid>
+      Require valid-user
+      AuthType openid-connect
+    </Location>
+
+    <Location /v3/auth/OS-FEDERATION/identity_providers/{{ keystone_openid_connect_conf.identity_provider }}/protocols/openid/websso>
+      Require valid-user
+      AuthType openid-connect
+    </Location>
+{% endif %}
 
     SetEnvIf Request_URI "^" any_request=1
     SetEnvIf X-Forwarded-For "^.*\..*\..*\..*" forwarded=1

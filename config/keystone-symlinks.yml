@@ -30,3 +30,4 @@ symlinks:
   "keystone/keystone_configure_sp_sample.yml": roles/KEY-API/files/samples/k2k/keystone_configure_sp_sample.yml
   "keystone/k2k_sp_mapping.json": roles/KEY-API/files/samples/k2k/k2k_sp_mapping.json
   "keystone/adfs_sp_mapping.json": roles/KEY-API/files/samples/websso/adfs_sp_mapping.json
+  "keystone/keystone_configure_openid_connect_sample.yml": roles/KEY-API/files/samples/websso/keystone_configure_openid_connect_sample.yml
