@@ -27,6 +27,8 @@
 log_config_append = {{ keystone_conf_dir }}/logging.conf
 notification_format = cadf
 notification_opt_out =
+debug = {{ keystone_enable_debug | default(false) }}
+insecure_debug = {{ keystone_enable_insecure_debug | default(false) }}
 
 [oslo_messaging_notifications]
 driver = noop
